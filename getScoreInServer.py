@@ -129,8 +129,8 @@ def sendMessage(final):
     if (file1 > last_file) - (file1 < last_file) != 0 :
         #print("new score")
         last_file = file1
-        account_sid = "ACcc65c5faa753a9bd11133b9c042f1efa"
-        auth_token  = "37c317f4cb98b4e08feb2ef8b9b476f9"
+        account_sid = "#填入你的sid#"
+        auth_token  = "#填入你的token#"
         ##基于twilio的免费短信推送，只能推送英文字母信息，所以这个版本会将中文转换为拼音发送
         client = Client(account_sid, auth_token)
         message = client.messages.create(
