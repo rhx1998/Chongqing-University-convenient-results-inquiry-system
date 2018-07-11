@@ -97,32 +97,16 @@ def get(html):
     return html.text
 
 def work(result):
-    #print(result)
     result = re.sub('<head>.*?</head>', "", result)
     result = re.sub('<input.*?>', "", result)
     result = re.sub('<span.*?</span>', "", result)
     result = re.sub('<table width=.857.*?</table>', "", result)
     result = re.sub('<td width=100%.*?</td>', "", result)
     result = re.sub('<td align=left.*?</td>', "", result)
-    #print(result)
     final = re.findall('<td width=[0-9]{2,3} .*?>(.*?)<br></td>', result)
-    #result = re.sub('>', ">\n", result)
     return final
 
-def translateGoogle(text, f='zh-cn', t='en'):
-     values = {'hl': 'zh-cn', 'ie': 'utf-8', 'text': text, 'langpair': '%s|%s' % (f, t)}
-     value = urllib.parse.urlencode(values)
-     req = urllib.request.Request(url_google + '?' + value)
-     req.add_header('User-Agent', user_agent)
-     response = urllib.request.urlopen(req)
-     content = response.read().decode('utf-8')
-     data = reg_text.search(content)
-     result = data.group(0).strip(';').strip('\'')
-     print(result)
-     return result
-
 def sendMessage(final):
-    #print(final)
     file1 = ""
     tmp = 0
     cnt = 0
@@ -147,10 +131,11 @@ def sendMessage(final):
         last_file = file1
         account_sid = "ACcc65c5faa753a9bd11133b9c042f1efa"
         auth_token  = "37c317f4cb98b4e08feb2ef8b9b476f9"
+        ##基于twilio的免费短信推送，只能推送英文字母信息，所以这个版本会将中文转换为拼音发送
         client = Client(account_sid, auth_token)
         message = client.messages.create(
-            to="+8617772314151", 
-            from_="+14064125028",
+            to="#在这里填入你的注册手机号#", 
+            from_="#在这里填入分配给你的免费手机号#",
             body = file1)
 
         
@@ -165,44 +150,11 @@ def show(final):
     
 if __name__ == "__main__":
     
-    username = "20164390"
-    password = "RHX987-"
+    username = "#在这里填入你的学号#"
+    password = "#在这里填入你的密码#"
     while 1:
         html   = login()
         result = get(html)
         final  = work(result)
         sendMessage(final)
         time.sleep(300)
-'''
-    root = Tk()
-    root.title("成绩单1.0")
-    root.geometry("400x200")
-    l1 = Label(root, text = "学号: ", )
-    l1.place(x = 50, y = 35)
-    entry1 = Entry(root)
-    entry1.insert(0, '20164390')
-    entry1.place(x = 130, y = 35)
-    l2 = Label(root, text = "密码: ")
-    l2.place(x = 50, y = 70)
-    entry2 = Entry(root, show = '*')
-    entry2.insert(0, 'RHX987-')
-    entry2.place(x = 130, y = 70)
-    def on_click():
-        global username
-        username = entry1.get()
-        global password
-        password = entry2.get()
-        #print(username)
-        html   = login()
-        result = get(html)
-        final  = work(result)
-        sendMessage(final)
-        #show(final)
-        root.destroy()
-        
-    Button(root, text = "开始查询", command = on_click).place(x = 160, y = 130)
-
-    
-    root.mainloop()
-    
-'''
